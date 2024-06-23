@@ -28,7 +28,7 @@ To run this project locally:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your_username/your_repo.git
+   git clone https://github.com/lonebhen/driving-guide-flutter
    ```
 
 2. Set up the Flutter development environment. Refer to the [Flutter documentation](https://flutter.dev/docs/get-started/install) for installation instructions.
