@@ -33,13 +33,7 @@ To run this project locally:
 
 2. Set up the Flutter development environment. Refer to the [Flutter documentation](https://flutter.dev/docs/get-started/install) for installation instructions.
 
-3. Ensure the Flask backend server is running locally or on a remote server accessible from your Flutter app.
-
-4. Configure the `_baseUrl` variable in `TrafficApiProvider.dart` to point to your Flask backend endpoint for traffic sign recognition.
-
-5. Integrate your Google Maps API key in the Flutter project for navigation features. Ensure the API key has the necessary permissions for Google Maps Directions API.
-
-6. Run the Flutter app on a simulator or physical device:
+3. Run the Flutter app on a simulator or physical device:
    ```bash
    flutter run
    ```
@@ -47,10 +41,6 @@ To run this project locally:
 ## Contributing
 
 Contributions are welcome! Please fork the repository and create a pull request with your proposed changes. For major changes, please open an issue first to discuss what you would like to contribute.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Acknowledgments
 
