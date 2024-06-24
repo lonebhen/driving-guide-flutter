@@ -10,7 +10,7 @@ class _MapScreen extends State<MapScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Map Screen'),
+        title: const Text('Direction'),
       ),
       body: Center(
         child: Column(
