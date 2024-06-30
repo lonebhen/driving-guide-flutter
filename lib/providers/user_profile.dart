@@ -27,6 +27,11 @@ class UserProfile {
     await prefs.setString('local_dialect', dialect);
   }
 
+  Future<void> setUserId(String userId) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('user_id', userId);
+  }
+
   Future<String?> getUserId() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getString('user_id');
