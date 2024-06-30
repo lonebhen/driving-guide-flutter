@@ -33,7 +33,7 @@ class _UserAccountScreenState extends State<UserAccountScreen> {
 
     if (userId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('User ID not found in local storage')),
+        const SnackBar(content: Text('User ID not found in local storage')),
       );
       return;
     }
@@ -49,11 +49,11 @@ class _UserAccountScreenState extends State<UserAccountScreen> {
       });
       await userProfile.setUserDialect(newDialect);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Local dialect updated successfully')),
+        const SnackBar(content: Text('Local dialect updated successfully')),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to update local dialect')),
+        const SnackBar(content: Text('Failed to update local dialect')),
       );
     } finally {
       setState(() {
@@ -66,64 +66,68 @@ class _UserAccountScreenState extends State<UserAccountScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('User Account'),
+        centerTitle: true,
+        title: const Text('User Account'),
         backgroundColor: Colors.purple,
       ),
       body: _isLoading
           ? Center(child: CircularProgressIndicator())
           : Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            CircleAvatar(
-              backgroundColor: Colors.purple,
-              radius: 50,
-              child: Icon(
-                Icons.person,
-                size: 50,
-                color: Colors.white,
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const CircleAvatar(
+                backgroundColor: Colors.purple,
+                radius: 50,
+                child: Icon(
+                  Icons.person,
+                  size: 50,
+                  color: Colors.white,
+                ),
               ),
-            ),
-            SizedBox(height: 20),
-            Text(
-              'User ID: $_userId',
-              style: TextStyle(fontSize: 18),
-            ),
-            SizedBox(height: 10),
-            Text(
-              'Current Dialect: $_selectedDialect',
-              style: TextStyle(fontSize: 18),
-            ),
-            SizedBox(height: 20),
-            Text(
-              'Select New Dialect:',
-              style: TextStyle(fontSize: 18, color: Colors.purple),
-            ),
-            SizedBox(height: 10),
-            DropdownButton<String>(
-              value: _selectedDialect,
-              items: _dialects.map((String dialect) {
-                return DropdownMenuItem<String>(
-                  value: dialect,
-                  child: Text(dialect),
-                );
-              }).toList(),
-              onChanged: (String? newValue) {
-                setState(() {
-                  _selectedDialect = newValue;
-                });
-              },
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _selectedDialect == null
-                  ? null
-                  : () => _updateDialect(_selectedDialect!),
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.purple),
-              child: Text('Update Dialect'),
-            ),
-          ],
+              const SizedBox(height: 20),
+              Text(
+                'User ID: $_userId',
+                style: TextStyle(fontSize: 18),
+              ),
+              SizedBox(height: 10),
+              Text(
+                'Current Dialect: $_selectedDialect',
+                style: const TextStyle(fontSize: 18),
+              ),
+              const SizedBox(height: 20),
+              const Text(
+                'Select New Dialect:',
+                style: TextStyle(fontSize: 18, color: Colors.purple),
+              ),
+              SizedBox(height: 10),
+              DropdownButton<String>(
+                value: _selectedDialect,
+                items: _dialects.map((String dialect) {
+                  return DropdownMenuItem<String>(
+                    value: dialect,
+                    child: Text(dialect),
+                  );
+                }).toList(),
+                onChanged: (String? newValue) {
+                  setState(() {
+                    _selectedDialect = newValue;
+                  });
+                },
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: _selectedDialect == null
+                    ? null
+                    : () => _updateDialect(_selectedDialect!),
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.lightBlue),
+                child: const Text('Update Dialect'),
+              ),
+            ],
+          ),
         ),
       ),
     );
