@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-
 import 'otp.dart';
+import 'package:driving_guide/providers/otp_provider.dart';
 
 class Register extends StatefulWidget {
   const Register({super.key});
@@ -10,14 +10,49 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register> {
+  final TextEditingController _phoneController = TextEditingController();
+  final OtpProvider _apiService = OtpProvider();
+  bool _isLoading = false;
+  String? _errorMessage;
+
+  Future<void> _sendOtp() async {
+    final msisdn = _phoneController.text;
+    if (msisdn.isEmpty) {
+      setState(() {
+        _errorMessage = 'Please enter your phone number';
+      });
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
+    final response = await _apiService.generateOtp(msisdn);
+    setState(() {
+      _isLoading = false;
+    });
+
+    if (response['success']) {
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (context) => Otp(msisdn: msisdn,)),
+      );
+    } else {
+      setState(() {
+        _errorMessage = response['message'];
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: Color(0xfff7f6fb),
+      backgroundColor: const Color(0xfff7f6fb),
       body: SafeArea(
         child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 24, horizontal: 32),
+          padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 32),
           child: Column(
             children: [
               Align(
@@ -31,23 +66,17 @@ class _RegisterState extends State<Register> {
                   ),
                 ),
               ),
-              const SizedBox(
-                height: 18,
-              ),
+              const SizedBox(height: 18),
               Container(
-                width: 200,
-                height: 200,
+                width: 100,
+                height: 150,
                 decoration: BoxDecoration(
                   color: Colors.deepPurple.shade50,
                   shape: BoxShape.circle,
                 ),
-                child: Image.asset(
-                  'assets/images/illustration-2.png',
-                ),
+                child: Image.asset('assets/images/illustration-2.png'),
               ),
-              const SizedBox(
-                height: 24,
-              ),
+              const SizedBox(height: 24),
               const Text(
                 'Registration',
                 style: TextStyle(
@@ -55,9 +84,7 @@ class _RegisterState extends State<Register> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              const SizedBox(
-                height: 10,
-              ),
+              const SizedBox(height: 10),
               const Text(
                 "Add your phone number. we'll send you a verification code so we know you're real",
                 style: TextStyle(
@@ -67,11 +94,9 @@ class _RegisterState extends State<Register> {
                 ),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(
-                height: 28,
-              ),
+              const SizedBox(height: 28),
               Container(
-                padding: EdgeInsets.all(28),
+                padding: const EdgeInsets.all(28),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(12),
@@ -79,6 +104,7 @@ class _RegisterState extends State<Register> {
                 child: Column(
                   children: [
                     TextFormField(
+                      controller: _phoneController,
                       keyboardType: TextInputType.number,
                       style: const TextStyle(
                         fontSize: 18,
@@ -86,11 +112,13 @@ class _RegisterState extends State<Register> {
                       ),
                       decoration: InputDecoration(
                         enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black12),
-                            borderRadius: BorderRadius.circular(10)),
+                          borderSide: const BorderSide(color: Colors.black12),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
                         focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black12),
-                            borderRadius: BorderRadius.circular(10)),
+                          borderSide: const BorderSide(color: Colors.black12),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
                         prefix: const Padding(
                           padding: EdgeInsets.symmetric(horizontal: 2),
                           child: Text(
@@ -108,17 +136,19 @@ class _RegisterState extends State<Register> {
                         ),
                       ),
                     ),
-                    const SizedBox(
-                      height: 22,
-                    ),
+                    const SizedBox(height: 22),
+                    if (_errorMessage != null)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0),
+                        child: Text(
+                          _errorMessage!,
+                          style: const TextStyle(color: Colors.red),
+                        ),
+                      ),
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(builder: (context) => Otp()),
-                          );
-                        },
+                        onPressed: _isLoading ? null : _sendOtp,
                         style: ButtonStyle(
                           foregroundColor:
                           MaterialStateProperty.all<Color>(Colors.white),
@@ -131,15 +161,20 @@ class _RegisterState extends State<Register> {
                             ),
                           ),
                         ),
-                        child: const Padding(
-                          padding: EdgeInsets.all(14.0),
-                          child: Text(
+                        child: Padding(
+                          padding: const EdgeInsets.all(14.0),
+                          child: _isLoading
+                              ? const CircularProgressIndicator(
+                            valueColor:
+                            AlwaysStoppedAnimation<Color>(Colors.white),
+                          )
+                              : const Text(
                             'Send',
                             style: TextStyle(fontSize: 16),
                           ),
                         ),
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),

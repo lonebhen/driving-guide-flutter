@@ -26,8 +26,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   int _currentPage = 0;
   List colors = const [
-    Color(0xffDAD3C8),
-    Color(0xffFFE5DE),
+    // Color(0xffDAD3C8),
+    // Color(0xffFFE5DE),
+    // Color(0xffDCF6E6),
+
+    Color(0xffDCF6E6),
+    Color(0xffDCF6E6),
     Color(0xffDCF6E6),
   ];
 
@@ -200,20 +204,58 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
 
 
-  void _skipOnboarding() {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => const Welcome()),
-    );
+  // void _skipOnboarding() {
+  //   Navigator.pushReplacement(
+  //     context,
+  //     MaterialPageRoute(builder: (context) => const Welcome()),
+  //   );
+  // }
+
+  void _skipOnboarding() async {
+    final prefs = await SharedPreferences.getInstance();
+    final userId = prefs.getString('userId');
+    final localDialect = prefs.getString('local_dialect');
+
+    if (userId != null && localDialect != null) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
+      );
+    } else {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const Welcome()),
+      );
+    }
   }
+
+  // void _completeOnboarding() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   await prefs.setBool('onboardingCompleted', true);
+  //   Navigator.pushReplacement(
+  //     context,
+  //     MaterialPageRoute(builder: (context) => const HomeScreen()),
+  //   );
+  // }
 
   void _completeOnboarding() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('onboardingCompleted', true);
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => const HomeScreen()),
-    );
+
+    final userId = prefs.getString('userId');
+    final localDialect = prefs.getString('local_dialect');
+
+    if (userId != null && localDialect != null) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
+      );
+    } else {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const Welcome()),
+      );
+    }
   }
 
 

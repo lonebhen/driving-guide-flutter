@@ -24,7 +24,7 @@ class _WelcomeState extends State<Welcome> {
                 width: 140,
               ),
               SizedBox(
-                height: 18,
+                height: 28,
               ),
               Text(
                 "Let's get started",
@@ -46,7 +46,7 @@ class _WelcomeState extends State<Welcome> {
                 textAlign: TextAlign.center,
               ),
               SizedBox(
-                height: 38,
+                height: 58,
               ),
               SizedBox(
                 width: double.infinity,
@@ -79,30 +79,30 @@ class _WelcomeState extends State<Welcome> {
               SizedBox(
                 height: 22,
               ),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {},
-                  style: ButtonStyle(
-                    foregroundColor:
-                    MaterialStateProperty.all<Color>(Colors.purple),
-                    backgroundColor:
-                    MaterialStateProperty.all<Color>(Colors.white),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(24.0),
-                      ),
-                    ),
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.all(14.0),
-                    child: Text(
-                      'Login',
-                      style: TextStyle(fontSize: 16),
-                    ),
-                  ),
-                ),
-              ),
+              // SizedBox(
+              //   width: double.infinity,
+              //   child: ElevatedButton(
+              //     onPressed: () {},
+              //     style: ButtonStyle(
+              //       foregroundColor:
+              //       MaterialStateProperty.all<Color>(Colors.purple),
+              //       backgroundColor:
+              //       MaterialStateProperty.all<Color>(Colors.white),
+              //       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+              //         RoundedRectangleBorder(
+              //           borderRadius: BorderRadius.circular(24.0),
+              //         ),
+              //       ),
+              //     ),
+              //     child: Padding(
+              //       padding: EdgeInsets.all(14.0),
+              //       child: Text(
+              //         'Login',
+              //         style: TextStyle(fontSize: 16),
+              //       ),
+              //     ),
+              //   ),
+              // ),
             ],
           ),
         ),
