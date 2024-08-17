@@ -1,3 +1,4 @@
+import 'package:driving_guide/screens/maps/location_screen.dart';
 import 'package:flutter/material.dart';
 import '../maps/map_screen.dart';
 import '../traffic-prediction/traffic_screen.dart';
@@ -14,7 +15,10 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
   static final List<Widget> _widgetOptions = <Widget>[
-    MapScreen(),
+    // MapScreen(37.7833, -122.4167,),
+    // LocationInputScreen(),
+
+    LocationScreen(),
     TrafficScreen(),
     UserAccountScreen(),
   ];
@@ -43,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 IconButton(
                   icon: const Icon(Icons.map),
-                  color: Colors.purple,
+                  color: Colors.blue,
                   onPressed: () {
                     _onItemTapped(0);
                   },
@@ -56,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 IconButton(
                   icon: const Icon(Icons.traffic),
-                  color: Colors.purple,
+                  color: Colors.blue,
                   onPressed: () {
                     _onItemTapped(1);
                   },
@@ -69,7 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 IconButton(
                   icon: const Icon(Icons.settings),
-                  color: Colors.purple,
+                  color: Colors.blue,
                   onPressed: () {
                     _onItemTapped(2);
                   },
