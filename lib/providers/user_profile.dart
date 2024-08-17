@@ -3,7 +3,9 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserProfile {
-  static const String _baseUrl = 'http://192.168.43.240:5000';
+  // static const String _baseUrl = 'http://192.168.43.240:5000';
+
+  static const String _baseUrl = 'https://driving-guide.onrender.com';
 
   Future<void> updateLocalDialect(String userId, String newDialect) async {
     final response = await http.put(
@@ -19,7 +21,7 @@ class UserProfile {
 
   Future<String?> getUserDialect() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString('local_dialect');
+    return prefs.getString('local_dialect') ?? 'TWI';
   }
 
   Future<void> setUserDialect(String dialect) async {

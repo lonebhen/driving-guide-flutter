@@ -20,11 +20,13 @@ class _UserAccountScreenState extends State<UserAccountScreen> {
   }
 
   Future<void> _loadUserData() async {
+    setState(() => _isLoading = true);
     String? userId = await userProfile.getUserId();
     String? dialect = await userProfile.getUserDialect();
     setState(() {
       _userId = userId;
       _selectedDialect = dialect;
+      _isLoading = false;
     });
   }
 
@@ -32,34 +34,26 @@ class _UserAccountScreenState extends State<UserAccountScreen> {
     String? userId = await userProfile.getUserId();
 
     if (userId == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('User ID not found in local storage')),
-      );
+      _showSnackBar('User ID not found in local storage');
       return;
     }
 
-    setState(() {
-      _isLoading = true;
-    });
+    setState(() => _isLoading = true);
 
     try {
       await userProfile.updateLocalDialect(userId, newDialect);
-      setState(() {
-        _selectedDialect = newDialect;
-      });
+      setState(() => _selectedDialect = newDialect);
       await userProfile.setUserDialect(newDialect);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Local dialect updated successfully')),
-      );
+      _showSnackBar('Local dialect updated successfully');
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to update local dialect')),
-      );
+      _showSnackBar('Failed to update local dialect');
     } finally {
-      setState(() {
-        _isLoading = false;
-      });
+      setState(() => _isLoading = false);
     }
+  }
+
+  void _showSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
@@ -72,62 +66,90 @@ class _UserAccountScreenState extends State<UserAccountScreen> {
       ),
       body: _isLoading
           ? Center(child: CircularProgressIndicator())
-          : Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Center(
+          : SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const CircleAvatar(
-                backgroundColor: Colors.purple,
-                radius: 50,
+              const SizedBox(height: 20),
+              CircleAvatar(
+                backgroundColor: Colors.purple.shade100,
+                radius: 60,
                 child: Icon(
                   Icons.person,
-                  size: 50,
-                  color: Colors.white,
+                  size: 60,
+                  color: Colors.purple,
                 ),
               ),
+              const SizedBox(height: 30),
+              _buildInfoCard('User ID', _userId ?? 'Not available'),
               const SizedBox(height: 20),
+              _buildInfoCard('Current Dialect', _selectedDialect ?? 'Not set'),
+              const SizedBox(height: 30),
               Text(
-                'User ID: $_userId',
-                style: TextStyle(fontSize: 18),
+                'Select New Dialect',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.purple),
+                textAlign: TextAlign.center,
               ),
-              SizedBox(height: 10),
-              Text(
-                'Current Dialect: $_selectedDialect',
-                style: const TextStyle(fontSize: 18),
-              ),
-              const SizedBox(height: 20),
-              const Text(
-                'Select New Dialect:',
-                style: TextStyle(fontSize: 18, color: Colors.purple),
-              ),
-              SizedBox(height: 10),
-              DropdownButton<String>(
-                value: _selectedDialect,
-                items: _dialects.map((String dialect) {
-                  return DropdownMenuItem<String>(
-                    value: dialect,
-                    child: Text(dialect),
-                  );
-                }).toList(),
-                onChanged: (String? newValue) {
-                  setState(() {
-                    _selectedDialect = newValue;
-                  });
-                },
-              ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 15),
+              _buildDialectDropdown(),
+              const SizedBox(height: 30),
               ElevatedButton(
-                onPressed: _selectedDialect == null
-                    ? null
-                    : () => _updateDialect(_selectedDialect!),
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.lightBlue),
-                child: const Text('Update Dialect'),
+                onPressed: _selectedDialect == null ? null : () => _updateDialect(_selectedDialect!),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.purple,
+                  padding: EdgeInsets.symmetric(vertical: 15),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                ),
+                child: Text('Update Dialect', style: TextStyle(fontSize: 18, color: Colors.white)),
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildInfoCard(String title, String value) {
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(title, style: TextStyle(fontSize: 14, color: Colors.grey[600])),
+            SizedBox(height: 5),
+            Text(value, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDialectDropdown() {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 12),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.purple),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<String>(
+          value: _selectedDialect,
+          isExpanded: true,
+          hint: Text('Select a dialect'),
+          items: _dialects.map((String dialect) {
+            return DropdownMenuItem<String>(
+              value: dialect,
+              child: Text(dialect),
+            );
+          }).toList(),
+          onChanged: (String? newValue) {
+            setState(() => _selectedDialect = newValue);
+          },
         ),
       ),
     );
