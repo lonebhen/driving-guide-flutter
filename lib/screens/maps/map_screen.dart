@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -9,7 +8,6 @@ import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:path_provider/path_provider.dart';
-
 import '../../providers/user_profile.dart';
 
 class MapScreen extends StatefulWidget {
@@ -98,7 +96,7 @@ class _MapScreenState extends State<MapScreen> {
 
       // Update current location marker
       Marker currentLocationMarker = Marker(
-        markerId: MarkerId('current_location'),
+        markerId: const MarkerId('current_location'),
         position: currentPosition,
         icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure),
       );
@@ -108,13 +106,26 @@ class _MapScreenState extends State<MapScreen> {
         _markers.add(currentLocationMarker);
       });
 
-      // Get polyline from current position to destination
-      _getPolyline(currentPosition, widget.destination);
+      // Check if the user has reached the destination
+      double distanceToDestination = Geolocator.distanceBetween(
+        position.latitude,
+        position.longitude,
+        widget.destination.latitude,
+        widget.destination.longitude,
+      );
 
-      if (_canRequestInstruction) {
-        _canRequestInstruction = false;
-        String instruction = await _getNavigationInstruction(currentPosition, widget.destination);
-        _speakInstruction(instruction);
+      if (distanceToDestination < 20) {
+        _showDestinationReachedBanner();
+        _stopNavigation();
+      } else {
+        // Auto-reroute if the user deviates from the route
+        _getPolyline(currentPosition, widget.destination);
+
+        if (_canRequestInstruction) {
+          _canRequestInstruction = false;
+          String instruction = await _getNavigationInstruction(currentPosition, widget.destination);
+          _speakInstruction(instruction);
+        }
       }
     });
   }
@@ -146,7 +157,7 @@ class _MapScreenState extends State<MapScreen> {
         _polylines.clear();
         _polylines.add(Polyline(
           polylineId: PolylineId('route'),
-          color: Colors.blue,
+          color: Colors.blue.shade900,
           points: _polylineCoordinates,
           width: 5,
         ));
@@ -198,16 +209,19 @@ class _MapScreenState extends State<MapScreen> {
     final UserProfile userProfile = UserProfile();
     String? local_dialect = await userProfile.getUserDialect();
 
-    print("This is the instructions: $instruction");
+    var splitResult = _splitInstruction(instruction);
+    String? nlpText = splitResult['nlpText'];
+    String? landmark = splitResult['landmark'];
 
-    // var url = Uri.parse('http://192.168.43.240:5000/text-to-speech');
+    print("NLP TEXT: $nlpText");
+    print("Landmark text: $landmark");
 
     var url = Uri.parse('https://driving-guide.onrender.com/text-to-speech');
     var headers = {
       'Content-Type': 'application/json',
     };
     var body = json.encode({
-      'text': instruction,
+      'text': nlpText,
       'local_dialect': local_dialect,
     });
 
@@ -219,26 +233,89 @@ class _MapScreenState extends State<MapScreen> {
 
     if (nlpResponse.statusCode == 200) {
       final Directory tempDir = await getTemporaryDirectory();
-      final File audioFile = File('${tempDir.path}/output.wav');
+      final File nlpAudioFile = File('${tempDir.path}/output.wav');
+      await nlpAudioFile.writeAsBytes(nlpResponse.bodyBytes);
 
-      print("Audio file : $audioFile");
-      await audioFile.writeAsBytes(nlpResponse.bodyBytes);
+      // Generate TTS for the landmark/location name
+      File landmarkAudioFile = await _generateLandmarkTTS(landmark!);
 
-      AudioPlayer audioPlayer = AudioPlayer();
-      await audioPlayer.play(DeviceFileSource(audioFile.path));
+      // Play the two audio files in sequence
+      await _playAudioInSequence(nlpAudioFile.path, landmarkAudioFile.path);
     } else {
-      print('Error: ${nlpResponse.statusCode}, ${nlpResponse.body}');
+      print('Error calling NLP API: ${nlpResponse.statusCode}, ${nlpResponse.body}');
     }
+  }
+
+  Future<File> _generateLandmarkTTS(String landmark) async {
+    // Implement TTS logic for the landmark name
+    // Example: Use a local TTS service or another API
+    final Directory tempDir = await getTemporaryDirectory();
+    final File landmarkAudioFile = File('${tempDir.path}/landmark_output.wav');
+
+    // Placeholder: generate audio for the landmark
+    await landmarkAudioFile.writeAsBytes([]); // Placeholder for actual audio data
+
+    return landmarkAudioFile;
+  }
+
+  Future<void> _playAudioInSequence(String firstAudioPath, String secondAudioPath) async {
+    await _audioPlayer.play(DeviceFileSource(firstAudioPath));
+    _audioPlayer.onPlayerStateChanged.listen((event) async {
+      await _audioPlayer.play(DeviceFileSource(secondAudioPath));
+    });
+  }
+
+  Map<String, String> _splitInstruction(String instruction) {
+    // Logic to split the instruction into parts
+    // Example: "Turn right onto Elm Street" => "Turn right onto", "Elm Street"
+    RegExp regex = RegExp(r'(.+?)\s(onto|to|towards)\s(.+)');
+    Match? match = regex.firstMatch(instruction);
+    if (match != null) {
+      String nlpText = match.group(1)! + ' ' + match.group(2)!;
+      String landmark = match.group(3)!;
+      return {'nlpText': nlpText, 'landmark': landmark};
+    } else {
+      return {'nlpText': instruction, 'landmark': ''}; // Default fallback
+    }
+  }
+
+  void _showDestinationReachedBanner() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Destination Reached'),
+          content: const Text('You have arrived at your destination.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pushReplacementNamed('/home');
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Navigation')),
+      appBar: AppBar(
+        title: const Text('Navigation'),
+        actions: [
+          IconButton(
+            icon: Icon(_isNavigating ? Icons.stop : Icons.navigation),
+            onPressed: _toggleNavigation,
+          ),
+        ],
+      ),
       body: GoogleMap(
         initialCameraPosition: CameraPosition(
           target: widget.destination,
-          zoom: 13,
+          zoom: 13.0,
         ),
         markers: _markers,
         polylines: _polylines,
@@ -246,18 +323,6 @@ class _MapScreenState extends State<MapScreen> {
           _mapController = controller;
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _toggleNavigation,
-        child: Icon(_isNavigating ? Icons.stop : Icons.navigation),
-      ),
     );
-  }
-
-  @override
-  void dispose() {
-    _audioPlayer.dispose();
-    _positionStreamSubscription?.cancel();
-    _requestTimer?.cancel();
-    super.dispose();
   }
 }

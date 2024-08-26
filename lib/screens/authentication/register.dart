@@ -153,7 +153,7 @@ class _RegisterState extends State<Register> {
                           foregroundColor:
                           MaterialStateProperty.all<Color>(Colors.white),
                           backgroundColor:
-                          MaterialStateProperty.all<Color>(Colors.purple),
+                          MaterialStateProperty.all<Color>(Colors.blue),
                           shape:
                           MaterialStateProperty.all<RoundedRectangleBorder>(
                             RoundedRectangleBorder(

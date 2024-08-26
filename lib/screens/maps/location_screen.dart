@@ -21,7 +21,7 @@ class _LocationScreenState extends State<LocationScreen> {
       appBar: AppBar(
         title: const Text('Enter Destination'),
         centerTitle: true,
-        backgroundColor: Colors.purple,
+        backgroundColor: Colors.blue.shade900,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

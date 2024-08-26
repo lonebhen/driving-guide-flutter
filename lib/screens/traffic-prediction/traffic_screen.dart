@@ -73,7 +73,7 @@ class _TrafficScreenState extends State<TrafficScreen> {
       appBar: AppBar(
         centerTitle: true,
         title: Text('Upload Traffic Sign Picture'),
-        backgroundColor: Colors.purple,
+        backgroundColor: Colors.blue.shade900,
       ),
       body: Center(
         child: _isLoading

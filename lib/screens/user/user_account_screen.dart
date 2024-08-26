@@ -62,7 +62,7 @@ class _UserAccountScreenState extends State<UserAccountScreen> {
       appBar: AppBar(
         centerTitle: true,
         title: const Text('User Account'),
-        backgroundColor: Colors.purple,
+        backgroundColor: Colors.blue.shade900,
       ),
       body: _isLoading
           ? Center(child: CircularProgressIndicator())
@@ -79,7 +79,7 @@ class _UserAccountScreenState extends State<UserAccountScreen> {
                 child: Icon(
                   Icons.person,
                   size: 60,
-                  color: Colors.purple,
+                  color: Colors.yellowAccent.shade100,
                 ),
               ),
               const SizedBox(height: 30),
@@ -89,7 +89,7 @@ class _UserAccountScreenState extends State<UserAccountScreen> {
               const SizedBox(height: 30),
               Text(
                 'Select New Dialect',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.purple),
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 15),
@@ -98,7 +98,7 @@ class _UserAccountScreenState extends State<UserAccountScreen> {
               ElevatedButton(
                 onPressed: _selectedDialect == null ? null : () => _updateDialect(_selectedDialect!),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.purple,
+                  backgroundColor: Colors.blueAccent,
                   padding: EdgeInsets.symmetric(vertical: 15),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                 ),

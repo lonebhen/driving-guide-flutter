@@ -144,7 +144,7 @@ class _OtpState extends State<Otp> {
                           onPressed: _verifyOtp,
                           style: ButtonStyle(
                             foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
-                            backgroundColor: MaterialStateProperty.all<Color>(Colors.purple),
+                            backgroundColor: MaterialStateProperty.all<Color>(Colors.blue.shade900),
                             shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                               RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(24.0),
@@ -179,7 +179,7 @@ class _OtpState extends State<Otp> {
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: Colors.purple,
+                    color: Colors.blue,
                   ),
                   textAlign: TextAlign.center,
                 ),

@@ -12,18 +12,18 @@ class OnboardingContents {
 
 List<OnboardingContents> contents = [
   OnboardingContents(
-    title: "Real time translation in local dialect",
+    title: "Local dialect translation in real-time",
     image: "assets/images/recognition.png",
-    desc: "Get a real time translation of your drive in your local dialect",
+    desc: "Get real-time drive translations in your local dialect.",
   ),
   OnboardingContents(
-    title: "Learn about traffic signs",
+    title: "Understand traffic signs",
     image: "assets/images/traffic_sign.jpg",
     desc:
     "Understand most traffic signs in your local dialect.",
   ),
   OnboardingContents(
-    title: "Get notified when you are about to get to your destination",
+    title: "Get notified when nearing your destination.",
     image: "assets/images/google-maps-car-logo.jpg",
     desc:
     "Take control of notifications.",

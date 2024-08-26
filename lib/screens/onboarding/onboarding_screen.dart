@@ -30,9 +30,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     // Color(0xffFFE5DE),
     // Color(0xffDCF6E6),
 
-    Color(0xffDCF6E6),
-    Color(0xffDCF6E6),
-    Color(0xffDCF6E6),
+    Color(0xffcbbc8c),
+    Color(0xff889eb4),
+    Color(0xffbabcda),
   ];
 
   AnimatedContainer _buildDots({
@@ -131,7 +131,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       onPressed: _completeOnboarding,
                       child: const Text("GET STARTED"),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.black,
+                        backgroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(50),
                         ),
@@ -176,7 +176,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           },
                           child: const Text("NEXT"),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.black,
+                            backgroundColor: Colors.white,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(50),
                             ),

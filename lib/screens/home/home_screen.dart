@@ -47,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 IconButton(
                   icon: const Icon(Icons.map),
-                  color: Colors.blue,
+                  color: Colors.blue.shade900,
                   onPressed: () {
                     _onItemTapped(0);
                   },
@@ -60,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 IconButton(
                   icon: const Icon(Icons.traffic),
-                  color: Colors.blue,
+                  color: Colors.blue.shade900,
                   onPressed: () {
                     _onItemTapped(1);
                   },
@@ -73,7 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 IconButton(
                   icon: const Icon(Icons.settings),
-                  color: Colors.blue,
+                  color: Colors.blue.shade900,
                   onPressed: () {
                     _onItemTapped(2);
                   },
